@@ -19,7 +19,6 @@ class ManipleBlockform_Bootstrap extends Zefram_Application_Module_Bootstrap
 
         /** @var Zend_View $view */
         $view = $bootstrap->getResource('View');
-        $view->addScriptPath(dirname(__FILE__) . '/views/scripts');
         $view->addHelperPath(dirname(__FILE__) . '/library/View/Helper/', 'ManipleBlockform_View_Helper_');
     }
 }
