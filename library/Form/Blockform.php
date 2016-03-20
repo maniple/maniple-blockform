@@ -291,7 +291,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 
         if (!isset($this->_blocks[$id][self::ELEMENT_DELETE])) {
             $element = $this->addBlockElement($id, 'button', self::ELEMENT_DELETE, array('label' => null, 'type' => 'submit', 'decorators' => 'ViewHelper'));
-            $element->setAttrib('data-block-remover', $id);
+            $element->setAttrib('data-role', 'blockform.blockRemover');
             $this->_blocks[$id][self::ELEMENT_DELETE] = $element;
             $this->_dirtyIndex = true;
         }
