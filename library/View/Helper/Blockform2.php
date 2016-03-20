@@ -145,7 +145,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
                 $attribs['id'] = $options['templateId'];
             }
 
-            $blockHtml = '<script type="text/html" data-blockform-role="blockTemplate"'
+            $blockHtml = '<script type="text/html" data-role="blockform.blockTemplate"'
                 . $this->_htmlAttribs($attribs)
                 . '>'
                 . $blockHtml
@@ -193,7 +193,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         if ($blockContainerTag) {
-            $html = '<' . $blockContainerTag . ' data-blockform-role="blockContainer">'
+            $html = '<' . $blockContainerTag . ' data-role="blockform.blockContainer">'
                   . $html
                   . '</' . strtok($blockContainerTag, "> \t\n\r") . '>';
         }
@@ -278,10 +278,10 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             if (isset($options['indexId'])) {
                 $index->setId($options['indexId']);
             }
+            $index->setAttrib('data-role', 'blockform.blockIndex');
 
             // render element to force initialization of id attribute
             $indexHtml = $index->render();
-            $attribs['data-block-index'] = $index->getId();
         }
 
         if (empty($options['noBlockAdder'])) {
@@ -295,9 +295,9 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
                 if (isset($options['adderId'])) {
                     $adder->setId($options['adderId']);
                 }
+                $adder->setAttrib('data-role', 'blockform.blockAdder');
 
                 $adderHtml = $adder->render();
-                $attribs['data-block-adder'] = $adder->getId();
             }
         }
 

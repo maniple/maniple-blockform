@@ -33,11 +33,11 @@
         this._elem.bind('blockadd', this._options.addBlock);
         this._elem.bind('blockremove', this._options.removeBlock);
 
-        this._blockIndex = $('#' + elem.data('blockIndex'));
-        this._blockAdder = $('#' + elem.data('blockAdder'));
+        this._blockIndex = elem.find('[data-role="blockform.blockIndex"]');
+        this._blockAdder = elem.find('[data-role="blockform.blockAdder"]');
 
-        this._blockTemplate = elem.find('[data-blockform-role=blockTemplate]').first();
-        this._blockContainer = elem.find('[data-blockform-role=blockContainer]').first();
+        this._blockTemplate = elem.find('[data-role="blockform.blockTemplate"]').first();
+        this._blockContainer = elem.find('[data-role="blockform.blockContainer"]').first();
 
         this._minBlocks = minBlocks;
         this._maxBlocks = maxBlocks;
@@ -95,7 +95,7 @@
 
         // if there is minimum number of blocks, disable removers
         if (this._numBlocks <= this._minBlocks) {
-            this._blockContainer.find('[data-block-remover]').addClass('disabled');
+            this._blockContainer.find('[data-role="blockform.blockRemover"]').addClass('disabled');
         }
     }; // }}}
 
@@ -127,7 +127,7 @@
 
             if (this._numBlocks === this._minBlocks) {
                 // ok, time to release block removers
-                this._blockContainer.find('[data-block-remover]').removeClass('disabled');
+                this._blockContainer.find('[data-role="blockform.blockRemover"]').removeClass('disabled');
             }
 
             this._blocks[blockId] = block;
@@ -189,7 +189,7 @@
 
             // lock block removers if min blocks reached
             if (this._numBlocks === this._minBlocks) {
-                this._blockContainer.find('[data-block-remover]').addClass('disabled');
+                this._blockContainer.find('[data-role="blockform.blockRemover]').addClass('disabled');
             }
 
             block.animate({paddingTop: 0, paddingBottom: 0, height: 0, opacity: 0}, function () {
