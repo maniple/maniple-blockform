@@ -342,4 +342,8 @@
 
     $.fn.blockform.Constructor = Blockform;
 
+    $(function () {
+        $('[data-init="blockform"]').blockform();
+    });
+
 }(window.jQuery));

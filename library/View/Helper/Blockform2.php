@@ -269,6 +269,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         $attribs = array(
             'class' => 'blockform',
+            'data-init' => 'blockform',
             'data-max-blocks' => $form->getMaxBlocks(),
             'data-min-blocks' => $form->getMinBlocks(),
         );
