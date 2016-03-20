@@ -55,7 +55,7 @@
             return false;
         });
 
-        this._blockContainer.on('click.blockform', '[data-block-remover]', function () {
+        this._blockContainer.on('click.blockform', '[data-role="blockform.blockRemover"]', function () {
             var blockId = $(this).closest('[data-block-id]').data('blockId');
             that.removeBlock(blockId);
             return false;
@@ -189,7 +189,7 @@
 
             // lock block removers if min blocks reached
             if (this._numBlocks === this._minBlocks) {
-                this._blockContainer.find('[data-role="blockform.blockRemover]').addClass('disabled');
+                this._blockContainer.find('[data-role="blockform.blockRemover"]').addClass('disabled');
             }
 
             block.animate({paddingTop: 0, paddingBottom: 0, height: 0, opacity: 0}, function () {
