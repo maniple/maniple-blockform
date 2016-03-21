@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(E_ALL | E_STRICT);
-
 // find autoload.php moving upwards, so that tests can be executed
 // even if the library itself lies in the vendor/ directory of another
 // project
