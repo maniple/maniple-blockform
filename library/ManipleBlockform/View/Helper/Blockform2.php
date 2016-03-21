@@ -64,6 +64,10 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
     {
         $elements = $form->getBlockElements($id);
 
+        if (isset($elements[ManipleBlockform_Form_Blockform::ELEMENT_DELETE])) {
+            $elements[ManipleBlockform_Form_Blockform::ELEMENT_DELETE]->setAttrib('data-role', 'blockform.blockRemover');
+        }
+
         $vars = array_merge(
             $elements,
             array(

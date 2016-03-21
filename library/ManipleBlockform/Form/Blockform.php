@@ -291,7 +291,6 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 
         if (!isset($this->_blocks[$id][self::ELEMENT_DELETE])) {
             $element = $this->addBlockElement($id, 'button', self::ELEMENT_DELETE, array('label' => null, 'type' => 'submit', 'decorators' => 'ViewHelper'));
-            $element->setAttrib('data-role', 'blockform.blockRemover');
             $this->_blocks[$id][self::ELEMENT_DELETE] = $element;
             $this->_dirtyIndex = true;
         }
@@ -409,19 +408,22 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
      *
      * @param  array $value Array to walk
      * @param  string $arrayPath Array notation path of the part to extract
+     * @param  bool &$found
      * @return mixed
      */
-    protected function _dissolveArrayValue($value, $arrayPath)
+    protected function _dissolveArrayValue($value, $arrayPath, &$found = null)
     {
+        $found = false;
         $arrayPath = explode('[', str_replace(']', '', $arrayPath));
 
         while ($part = array_shift($arrayPath)) {
-            if (isset($value[$part])) {
+            if (is_array($value) && array_key_exists($part, $value)) {
                 $value = $value[$part];
             } else {
                 break;
             }
             if (empty($arrayPath)) {
+                $found = true;
                 return $value;
             }
         }
@@ -433,7 +435,15 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     {
         if ($this->isArray()) {
             $elementsBelongTo = $this->getElementsBelongTo();
-            $defaults = $this->_dissolveArrayValue($defaults, $elementsBelongTo);
+            $defaults = $this->_dissolveArrayValue($defaults, $elementsBelongTo, $found);
+            if (!$found) {
+                // if provided array contains no matching key skip setting defaults,
+                // as there were no defaults given - this is important, as
+                // array('blocks' => array()) is not the same as array() - in the first
+                // example we have empty blocks, in the second, there is no change to apply
+                // as no array path was matched.
+                return $this;
+            }
         }
         return $this->setBlocks((array) $defaults);
     }

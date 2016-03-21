@@ -21,7 +21,9 @@ class ManipleBlockform_Form_BlockformTest extends PHPUnit_Framework_TestCase
     public function testSetDefaultsViaSubForm()
     {
         $form = new Zend_Form();
-        $form->addSubForm(new F, 'autobots');
+        $form->addSubForm(new F(array(
+            'isArray' => true,
+        )), 'autobots');
         $form->setDefaults(array(
             'autobots' => array(
                 array('name' => 'Defensor'),
