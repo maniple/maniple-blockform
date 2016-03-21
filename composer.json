@@ -1,5 +1,6 @@
 {
     "name": "maniple/maniple-blockform",
+    "description": "",
     "type": "zefram-module",
     "license": "MIT",
     "authors": [
@@ -9,8 +10,16 @@
         }
     ],
     "require": {
-        "php": ">=5.2.11",
+        "php": ">=5.3.3",
         "xemlock/zefram-composer-installer": "*",
         "xemlock/zefram": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-0": {
+            "ManipleBlockform_": "library/"
+        }
     }
 }
