@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         strict="true"
+         verbose="true">
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <ini name="display_errors" value="1" />
+        <ini name="display_startup_errors" value="1" />
+        <ini name="memory_limit" value="-1" />
+        <ini name="short_open_tag" value="0" />
+    </php>
+    <testsuites>
+        <testsuite name="ManipleBlockform Test Suite">
+            <directory suffix=".php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./library</directory>
+        </whitelist>
+    </filter>
+</phpunit>
