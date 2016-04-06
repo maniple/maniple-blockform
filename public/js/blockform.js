@@ -27,6 +27,10 @@
             throw new Blockform.Error('minBlocks must be lower than or equal to maxBlocks');
         }
 
+        if (elem.data('blockform')) {
+            throw new Error('Blockform is already attached to this element');
+        }
+
         this._options = $.extend({}, Blockform.defaults, options);
 
         this._elem = elem;
@@ -60,6 +64,8 @@
             that.removeBlock(blockId);
             return false;
         });
+
+        elem.data('blockform', this);
     } // }}}
 
     /**
@@ -200,7 +206,7 @@
             return true;
         }
 
-        throw new Blockform.Error('Invalid block ID');
+        throw new Blockform.Error('Invalid block ID: ' + blockId);
     }; // }}}
 
     /**
