@@ -224,7 +224,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     } // }}}
 
     /**
-     * @return array
+     * @return Zend_Form_Element[]
      */
     public function getBlockElements($id) // {{{
     {
