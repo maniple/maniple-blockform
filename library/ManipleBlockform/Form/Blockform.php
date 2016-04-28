@@ -507,9 +507,16 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 
         // dodaj istniejace bloki, tutaj mamy gwarancje, ze limit
         // blokow jest respektowany
-        foreach ($idx as $id => $whatever) {
+        foreach ($idx as $id => $_) {
             $this->createBlock($id);
         }
+
+        // reorder blocks by index
+        $orderedBlocks = array();
+        foreach ($idx as $id => $_) {
+            $orderedBlocks[$id] = $this->getBlockElements($id);
+        }
+        $this->_blocks = $orderedBlocks;
 
         // enforce minimum number of blocks
         $freeBlockId = $this->getFreeBlockId();
