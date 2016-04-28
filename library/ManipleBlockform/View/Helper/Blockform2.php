@@ -290,18 +290,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         if (empty($options['noBlockAdder'])) {
             if ($adder = $form->getElement(ManipleBlockform_Form_Blockform::ELEMENT_ADD)) {
-                if (isset($options['adderClass'])) {
-                    $adder->setAttrib('class', $options['adderClass']);
-                }
-                if (isset($options['adderLabel'])) {
-                    $adder->setLabel($options['adderLabel']);
-                }
-                if (isset($options['adderId'])) {
-                    $adder->setId($options['adderId']);
-                }
-                $adder->setAttrib('data-role', 'blockform.blockAdder');
-
-                $adderHtml = $adder->render();
+                $adderHtml = $this->renderAdder($adder, $options);
             }
         }
 
@@ -323,4 +312,30 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         return $html;
     } // }}}
+
+    public function renderAdder(Zend_Form_Element $adder, array $options = null)
+    {
+        if (isset($options['adderClass'])) {
+            $adder->setAttrib('class', $options['adderClass']);
+        }
+        if (isset($options['adderLabel'])) {
+            $adder->setLabel($options['adderLabel']);
+        }
+        if (isset($options['adderId'])) {
+            $adder->setId($options['adderId']);
+        }
+        $adder->setAttrib('data-role', 'blockform.blockAdder');
+
+        $adderHtml = $adder->render();
+
+        if (isset($options['adderWrapper'])) {
+            $adderWrapperTag = trim($options['adderWrapper'], "<> \r\t\n");
+
+            $adderHtml = '<' . $adderWrapperTag . '>'
+                . $adderHtml
+                . '</' . strtok($adderWrapperTag, "> \t\n\r") . '>';
+        }
+
+        return $adderHtml;
+    }
 }
