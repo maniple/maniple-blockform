@@ -339,7 +339,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     } // }}}
 
     /**
-     * @param bool $suppressArrayNotation   Not used, required by strict standards
+     * @param bool $suppressArrayNotation
      * @return array
      */
     public function getValues($suppressArrayNotation = false) // {{{
@@ -350,7 +350,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
         }
 
         $values = $this->getBlockValues();
-        if ($elementsBelongTo) {
+        if (!$suppressArrayNotation && $elementsBelongTo) {
             $values = array($elementsBelongTo => $values);
         }
 
