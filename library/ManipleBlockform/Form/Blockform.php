@@ -431,6 +431,14 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
         return null;
     }
 
+    /**
+     * Set default values for block elements. Data is expected to
+     * be grouped by block values, i.e.:
+     * [block_id] => array(...block values...)
+     *
+     * @param array $defaults
+     * @return ManipleBlockform_Form_Blockform
+     */
     public function setDefaults(array $defaults)
     {
         if ($this->isArray()) {
@@ -479,6 +487,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
      * a nastepnie sprawdza poprawnosc przeslanych danych.
      *
      * @param array $data przeslane dane
+     * @return bool
      */
     public function isValid($data) // {{{
     {
@@ -549,12 +558,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
             }
         }
 
-        if ($specialSubmit) {
-            $this->populate($data);
-            return false;
-        }
-
-        // original isValid implementation requires original data array
+        // original isValid() and setDefaults() implementations require original data array
         if ($this->isArray()) {
             $parts = explode('[', str_replace(']', '', $elementsBelongTo));
             $newData = $data;
@@ -562,6 +566,11 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
                 $newData = array($part => $newData);
             }
             $data = $newData;
+        }
+
+        if ($specialSubmit) {
+            parent::setDefaults($data);
+            return false;
         }
 
         return parent::isValid($data);
