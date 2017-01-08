@@ -29,7 +29,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
      *
      * @param array|object $options
      */
-    public function __construct($options = null) // {{{ 
+    public function __construct($options = null) // {{{
     {
         if ($options !== null) {
             if (is_object($options) && method_exists($options, 'toArray')) {
@@ -241,7 +241,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
      */
     public function getBlockElement($id, $name) // {{{
     {
-        $block = $this->getBlock($id);
+        $block = $this->getBlockElements($id);
 
         if (isset($block[$name])) {
             return $block[$name];
@@ -249,7 +249,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 
         return null;
     } // }}}
-    
+
     /**
      * Dodaje do bloku o podanym identyfikatorze nowy element.
      *
@@ -470,7 +470,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     } // }}}
 
     public function getFreeBlockId() // {{{
-    {      
+    {
         return count($this->_blocks) == 0 ? 0 : intval(max(array_keys($this->_blocks)) + 1);
     } // }}}
 

@@ -38,7 +38,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
                     $cache = null;
                     break;
             }
-            
+
             self::$_cache = $cache instanceof Zend_Cache_Core ? $cache : false;
         }
 
