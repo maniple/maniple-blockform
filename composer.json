@@ -1,7 +1,7 @@
 {
     "name": "maniple/maniple-blockform",
     "description": "",
-    "type": "zefram-module",
+    "type": "zend1-module",
     "license": "MIT",
     "authors": [
         {
@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "xemlock/zefram-composer-installer": "*",
+        "xemlock/zend1-composer-installer": "*",
         "xemlock/zefram": "*"
     },
     "require-dev": {
