@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, plusplus: true */
 
 /*!
- * @version 2014-02-28 / 2014-01-16
+ * @version 2017-03-17 / 2014-02-28 / 2014-01-16
  */
 (function ($) {
     'use strict';
@@ -34,8 +34,8 @@
         this._options = $.extend({}, Blockform.defaults, options);
 
         this._elem = elem;
-        this._elem.bind('blockadd', this._options.addBlock);
-        this._elem.bind('blockremove', this._options.removeBlock);
+        this._elem.bind('blockadd.blockform', this._options.addBlock);
+        this._elem.bind('blockremove.blockform', this._options.removeBlock);
 
         this._blockIndex = elem.find('[data-role="blockform.blockIndex"]');
         this._blockAdder = elem.find('[data-role="blockform.blockAdder"]');
@@ -103,6 +103,11 @@
         if (this._numBlocks <= this._minBlocks) {
             this._blockContainer.find('[data-role="blockform.blockRemover"]').addClass('disabled');
         }
+
+        // if number of blocks is equal or greater to limit, disable adder
+        if (0 < this._maxBlocks && this._numBlocks >= this._maxBlocks) {
+          this._blockAdder.addClass('disabled');
+        }
     }; // }}}
 
     /**
@@ -115,7 +120,7 @@
         }
 
         // pobierz pierwszy wolny numer bloku, utworz nowy blok na bazie
-        // templejtu (zastap placeholdery "{{ id }}" numerem bloku), 
+        // templejtu (zastap placeholdery "{{ id }}" numerem bloku),
         // i jezeli pierwszy element w nowym bloku ma klase .form-block,
         // dodaj go do elementu przechowujacego bloki oraz zaktualizuj
         // indeks
@@ -128,7 +133,7 @@
                 .appendTo(this._blockContainer)
                 .animate({height: 'show', opacity: 1}, function () {
                     // focus on first autofocus element
-                    block.find('[autofocus]').first().focus();                
+                    block.find('[autofocus]').first().focus();
                 });
 
             if (this._numBlocks === this._minBlocks) {
@@ -315,6 +320,24 @@
     }; // }}}
 
     /**
+     * @param {string} event
+     * @param {function} handler
+     */
+    Blockform.prototype.on = function (event, handler) { // {{{
+        this._elem.on(event, handler);
+        return this;
+    } // }}}
+
+    /**
+     * @param {string} event
+     * @param {function} handler
+     */
+    Blockform.prototype.off = function (event, handler) { // {{{
+        this._elem.off(event, handler);
+        return this;
+    } // }}}
+
+    /**
      * @param {string} message
      * @constructor
      */
@@ -349,7 +372,7 @@
     $.fn.blockform.Constructor = Blockform;
 
     $(function () {
-        $('[data-init="blockform"]').blockform();
+        $('[data-init="blockform"]').blockform({});
     });
 
 }(window.jQuery));
