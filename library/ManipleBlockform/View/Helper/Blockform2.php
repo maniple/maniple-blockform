@@ -197,9 +197,9 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         if ($blockContainerTag) {
-            $html = '<' . $blockContainerTag . ' data-role="blockform.blockContainer">'
-                  . $html
-                  . '</' . strtok($blockContainerTag, "> \t\n\r") . '>';
+            $html = $this->_wrap($html, $blockContainerTag, array(
+                'data-role' => 'blockform.blockContainer'
+            ));
         }
 
         return $html;
@@ -230,17 +230,15 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             $blockTag = 'div';
         }
 
-        $htmlAttribs = $this->_htmlAttribs(array(
+        $attribs = array(
             'data-block-id' => $id,
-        ));
+        );
 
         if ($blockTag) {
             // block tag can be given as a tag name, or tag name with attributes
-            $blockHtml = '<' . $blockTag . $htmlAttribs . '>'
-                . $blockHtml
-                . '</' . strtok($blockTag, "> \t\n\r") . '>';
+            $blockHtml = $this->_wrap($blockHtml, $blockTag, $attribs);
         } else {
-            $blockHtml = substr_replace($blockHtml, $htmlAttribs . '>', $pos, 1);
+            $blockHtml = substr_replace($blockHtml, $this->_htmlAttribs($attribs) . '>', $pos, 1);
         }
 
         return $blockHtml;
@@ -256,6 +254,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      *     'adderId'        => string
      *     'adderClass'     => string
      *     'adderLabel'     => string
+     *     'adderWrapper'   => string  tag name OPTIONAL
      *
      * and options supported by {@see renderBlocks()} and
      * {@see renderBlockTemplate()} methods.
@@ -277,6 +276,10 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             'data-max-blocks' => $form->getMaxBlocks(),
             'data-min-blocks' => $form->getMinBlocks(),
         );
+
+        if (isset($options['id'])) {
+            $attribs['id'] = $options['id'];
+        }
 
         if ($index = $form->getElement(ManipleBlockform_Form_Blockform::ELEMENT_INDEX)) {
             if (isset($options['indexId'])) {
@@ -313,6 +316,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         return $html;
     } // }}}
 
+
     public function renderAdder(Zend_Form_Element $adder, array $options = null)
     {
         if (isset($options['adderClass'])) {
@@ -321,6 +325,10 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         if (isset($options['adderLabel'])) {
             $adder->setLabel($options['adderLabel']);
         }
+
+        $escape = isset($options['adderEscape']) ? $options['adderEscape'] : true;
+        $adder->setAttrib('escape', (bool) $escape);
+
         if (isset($options['adderId'])) {
             $adder->setId($options['adderId']);
         }
@@ -329,13 +337,23 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         $adderHtml = $adder->render();
 
         if (isset($options['adderWrapper'])) {
-            $adderWrapperTag = trim($options['adderWrapper'], "<> \r\t\n");
-
-            $adderHtml = '<' . $adderWrapperTag . '>'
-                . $adderHtml
-                . '</' . strtok($adderWrapperTag, "> \t\n\r") . '>';
+            $adderHtml = $this->_wrap($adderHtml, $options['adderWrapper']);
         }
 
         return $adderHtml;
     }
+
+    protected function _wrap($content, $wrapperTag, array $attribs = array())
+    {
+        $wrapperTag = trim($wrapperTag, "<> \r\t\n");
+
+        if ($wrapperTag) {
+            return '<' . $wrapperTag . $this->_htmlAttribs($attribs) . '>'
+            . $content
+            . '</' . strtok($wrapperTag, "> \t\n\r") . '>';
+        }
+
+        return $content;
+    }
+
 }
