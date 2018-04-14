@@ -106,7 +106,7 @@
 
         // if number of blocks is equal or greater to limit, disable adder
         if (0 < this._maxBlocks && this._numBlocks >= this._maxBlocks) {
-          this._blockAdder.addClass('disabled');
+            this._blockAdder.addClass('disabled');
         }
     }; // }}}
 

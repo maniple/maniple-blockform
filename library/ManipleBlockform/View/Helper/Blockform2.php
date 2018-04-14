@@ -4,7 +4,11 @@
  * View helper for rendering Blockform element blocks.
  *
  * @author xemlock
- * @version 2014-01-21 / 2014-01-16
+ * @version 2018-04-14 / 2014-01-21 / 2014-01-16
+ *
+ * Changelog:
+ * 2018-04-14  - added autoInit setting
+ *             - added vars setting, custom variables are available via block.*
  */
 class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlElement
 {
@@ -72,12 +76,13 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             $elements,
             array(
                 'block' => array_merge(
-                    array_merge(array(
+                    array(
                         'index'    => null,
                         'index0'   => null,
                         'first'    => null,
                         'last'     => null,
-                    ), (array) $vars),
+                    ),
+                    (array) $vars,
                     array(
                         'id'       => $id,
                         'form'     => $form,
@@ -105,6 +110,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
     public function renderBlockTemplate(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null) // {{{
     {
         $cache = null;
+        $vars = isset($options['vars']) ? (array) $options['vars'] : array();
 
         if (0&&empty($options['noCache'])) {
             $cache = self::getCache();
@@ -116,6 +122,12 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
                     $viewScript,
                     serialize($options)
                 ));
+        }
+
+        if ($vars) {
+            // don't use cache if vars were provided
+            // TODO Think if maybe we can cache simple variables
+            $cache = null;
         }
 
         if ($cache && ($result = $cache->load($cacheKey))) {
@@ -131,7 +143,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         if (null === $viewScript) {
             $blockHtml = trim($formCopy->renderFormElements());
         } else {
-            $blockHtml = $this->renderBlockHtml($viewScript, $formCopy, $id);
+            $blockHtml = $this->renderBlockHtml($viewScript, $formCopy, $id, $vars);
         }
 
         // replace id with placeholder
@@ -166,6 +178,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
     /**
      * Options:
      *     'blockContainerTag'  => string, default 'div'
+     *     'vars'               => array
      *
      * @param  ManipleBlockform_Form_Blockform $form
      * @param  string $viewScript
@@ -184,15 +197,16 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         $html = '';
 
         $ids = $form->getBlockIds();
+        $vars = isset($options['vars']) ? (array) $options['vars'] : array();
 
         for ($i = 0, $n = count($ids); $i < $n; ++$i) {
             $id = $ids[$i];
-            $blockHtml = $this->renderBlockHtml($viewScript, $form, $id, array(
+            $blockHtml = $this->renderBlockHtml($viewScript, $form, $id, array_merge($vars, array(
                 'index'  => $i + 1,
                 'index0' => $i,
                 'first'  => $i === 0,
                 'last'   => $i === $n - 1,
-            ));
+            )));
             $html .= $this->_finalizeBlock($blockHtml, $id, $options);
         }
 
@@ -255,6 +269,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      *     'adderClass'     => string
      *     'adderLabel'     => string
      *     'adderWrapper'   => string  tag name OPTIONAL
+     *     'autoInit'       => bool, default TRUE
      *
      * and options supported by {@see renderBlocks()} and
      * {@see renderBlockTemplate()} methods.
@@ -264,7 +279,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param  array $options OPTIONAL
      * @return string
      */
-    public function render(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null) // {{{
+    public function render(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = array()) // {{{
     {
         $indexHtml = null;
         $adderHtml = null;
@@ -272,10 +287,13 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         $attribs = array(
             'class' => 'blockform',
-            'data-init' => 'blockform',
             'data-max-blocks' => $form->getMaxBlocks(),
             'data-min-blocks' => $form->getMinBlocks(),
         );
+
+        if (!isset($options['autoInit']) || $options['autoInit']) {
+            $attribs['data-init'] = 'blockform';
+        }
 
         if (isset($options['id'])) {
             $attribs['id'] = $options['id'];
@@ -307,11 +325,11 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         $blocksHtml = $this->renderBlocks($form, $viewScript, $options);
 
         $html = '<div' . $this->_htmlAttribs($attribs) . '>'
-              . $templateHtml
-              . $indexHtml
-              . $blocksHtml
-              . $adderHtml
-              . '</div>';
+            . $templateHtml
+            . $indexHtml
+            . $blocksHtml
+            . $adderHtml
+            . '</div>';
 
         return $html;
     } // }}}
@@ -349,8 +367,8 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         if ($wrapperTag) {
             return '<' . $wrapperTag . $this->_htmlAttribs($attribs) . '>'
-            . $content
-            . '</' . strtok($wrapperTag, "> \t\n\r") . '>';
+                . $content
+                . '</' . strtok($wrapperTag, "> \t\n\r") . '>';
         }
 
         return $content;

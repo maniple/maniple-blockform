@@ -2,7 +2,7 @@
 
 /**
  * @author xemlock
- * @version 2014-03-07 / 2013-06-24
+ * @version 2015-04-02 / 2014-03-07 / 2013-06-24
  */
 abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 {
@@ -66,6 +66,12 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
         );
 
         parent::__construct($options);
+
+        // create initial number of blocks
+        if ($this->_minBlocks > 0) {
+            $this->getBlocks();
+        }
+
         $this->_init();
     } // }}}
 
@@ -251,6 +257,17 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     } // }}}
 
     /**
+     * @param string $id
+     * @param string $name
+     * @return string
+     * @throws Exception
+     */
+    public function formatBlockElementName($id, $name)
+    {
+        return $name . self::BLOCK_SEPARATOR . $this->_id($id);
+    }
+
+    /**
      * Dodaje do bloku o podanym identyfikatorze nowy element.
      *
      * @param int $id                           id bloku
@@ -302,8 +319,10 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
      * Filtruje wartosci w bloku, wygodniejsze gdy nie ma potrzeby
      * tworzenia dodatkowych filtrow.
      */
-    protected function _filterBlockValues(array &$values) // {{{
-    {} // }}}
+    protected function _filterBlockValues(array $values) // {{{
+    {
+        return $values;
+    } // }}}
 
     protected function _getBlockValues($id) // {{{
     {
@@ -315,7 +334,13 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
                 if ($name == self::ELEMENT_DELETE) continue;
                 $values[$name] = $element->getValue();
             }
-            $this->_filterBlockValues($values);
+
+            $filteredValues = $this->_filterBlockValues($values);
+            if (is_array($filteredValues)) {
+                return $filteredValues;
+            } else {
+                throw new Zend_Form_Exception(sprintf('%s::_filterBlockValues did not return array', get_class($this)));
+            }
         }
 
         return $values;
@@ -393,6 +418,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     {
         $this->clearBlocks();
         $this->addBlocks($blocks);
+        $this->getBlocks(); // ensure that minBlocks limit is applied
 
         return $this;
     } // }}}
@@ -570,7 +596,7 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
 
         if ($specialSubmit) {
             parent::setDefaults($data);
-            return false;
+            return false; // do not validate
         }
 
         return parent::isValid($data);
