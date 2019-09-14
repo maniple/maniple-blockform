@@ -4,9 +4,10 @@
  * View helper for rendering Blockform element blocks.
  *
  * @author xemlock
- * @version 2018-04-14 / 2014-01-21 / 2014-01-16
+ * @version 2019-09-14 / 2018-04-14 / 2014-01-21 / 2014-01-16
  *
  * Changelog:
+ * 2019-09-14  - handle comments when adding attributes to block element
  * 2018-04-14  - added autoInit setting
  *             - added vars setting, custom variables are available via block.*
  */
@@ -236,6 +237,15 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             $blockTag = trim($options['blockTag'], "<> \r\t\n");
         }
 
+        // Remove comments with placeholders
+        $comments = array();
+        $commentFormat = '__' . __CLASS__ . '__' . time() . '__%s__';
+        $blockHtml = preg_replace_callback('/<!--.*?-->/', function ($match) use (&$comments, $commentFormat) {
+            $id = sprintf($commentFormat, count($comments));
+            $comments[$id] = $match[0];
+            return $id;
+        }, $blockHtml);
+
         // check if data-block-id attribute can be appended to first
         // encountered tag, if not, use default blockTag
         $pos = strpos($blockHtml, '>');
@@ -253,6 +263,11 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             $blockHtml = $this->_wrap($blockHtml, $blockTag, $attribs);
         } else {
             $blockHtml = substr_replace($blockHtml, $this->_htmlAttribs($attribs) . '>', $pos, 1);
+        }
+
+        // Restore comments
+        foreach ($comments as $id => $comment) {
+            $blockHtml = str_replace($id, $comment, $blockHtml);
         }
 
         return $blockHtml;

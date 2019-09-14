@@ -1,7 +1,11 @@
 /*jslint browser: true, nomen: true, plusplus: true */
 
 /*!
- * @version 2017-03-17 / 2014-02-28 / 2014-01-16
+ * @version 2019-09-14 / 2017-03-17 / 2014-02-28 / 2014-01-16
+ *
+ * Changelog:
+ * 2019-09-14  - when creating block element get first ELEMENT_NODE
+ *             - preventDefault on adder click event
  */
 (function ($) {
     'use strict';
@@ -53,7 +57,8 @@
         this._loadBlocks();
 
         this._blockAdder.off('click.blockform');
-        this._blockAdder.on('click.blockform', function () {
+        this._blockAdder.on('click.blockform', function (e) {
+            e.preventDefault();
             that._createBlock();
 
             return false;
@@ -126,7 +131,9 @@
         // indeks
         var blockId = this._free++,
             blockHtml = this._blockTemplate.html(),
-            block = $(blockHtml.replace(/\{\{ id \}\}/g, blockId)).first();
+            block = $(blockHtml.replace(/\{\{ id \}\}/g, blockId)).filter(function () {
+                return this.nodeType === 1; /* Node.ELEMENT_NODE */
+            }).first();
 
         if (block.is('[data-block-id]')) {
             block.css({display: 'none', opacity: 0})
