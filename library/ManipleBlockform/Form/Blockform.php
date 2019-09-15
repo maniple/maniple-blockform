@@ -2,9 +2,14 @@
 
 /**
  * @author xemlock
- * @version 2015-04-02 / 2014-03-07 / 2013-06-24
+ * @version 2019-09-15 / 2015-04-02 / 2014-03-07 / 2013-06-24
+ *
+ * Changelog:
+ * - 2019-09-15 - inherit from Zefram_Form2
+ *              - addBlockElement: use name from Zend_Form_Element instance
+ *              - addBlockRemover: pass decorators as array
  */
-abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
+abstract class ManipleBlockform_Form_Blockform extends Zefram_Form2
 {
     // nazwy pol formularza odpowiedzialne za logike dodawania
     // dynamicznych elementow
@@ -22,6 +27,10 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     protected $_maxBlocks = 10;
     protected $_minBlocks = 0;
 
+    /**
+     * @param int $id
+     * @throws Zend_Form_Exception
+     */
     abstract public function createBlock($id);
 
     /**
@@ -268,19 +277,23 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
     }
 
     /**
-     * Dodaje do bloku o podanym identyfikatorze nowy element.
+     * Add form element to the block of given id.
      *
-     * @param int $id                           id bloku
-     * @param string|Zend_Form_Element $type    typ elementu lub element
-     * @param string $name                      bazowa nazwa elementu
-     * @param array $options                    dodatkowe opcje
-     * @return Zend_Form_Element                dodany element
+     * @param int $id                        block id
+     * @param string|Zend_Form_Element $type element type or element instance
+     * @param string $name                   base element name, optional if element is a Zend_Form_Element
+     * @param array $options                 element options
+     * @return Zend_Form_Element             the added element
+     * @throws Zend_Form_Exception
      */
-    public function addBlockElement($id, $type, $name, $options = null) // {{{
+    public function addBlockElement($id, $type, $name = null, $options = null)
     {
         $id = $this->_id($id);
         if (!strlen($id)) {
             throw new Exception('Invalid block identifier provided');
+        }
+        if (($type instanceof Zend_Form_Element) && ($name === null)) {
+            $name = $type->getName();
         }
         $key = $name . self::BLOCK_SEPARATOR . $id;
         if ($type instanceof Zend_Form_Element) {
@@ -297,23 +310,28 @@ abstract class ManipleBlockform_Form_Blockform extends Zefram_Form
         $this->_dirtyIndex = true;
 
         return $element;
-    } // }}}
+    }
 
-    public function addBlockRemover($id) // {{{
+    /**
+     * @param int $id
+     * @return Zend_Form_Element
+     * @throws Zend_Form_Exception
+     */
+    public function addBlockRemover($id)
     {
         $id = $this->_id($id);
         if (!strlen($id)) {
-            throw new Exception('Invalid block identifier provided');
+            throw new Zend_Form_Exception('Invalid block identifier provided');
         }
 
         if (!isset($this->_blocks[$id][self::ELEMENT_DELETE])) {
-            $element = $this->addBlockElement($id, 'button', self::ELEMENT_DELETE, array('label' => null, 'type' => 'submit', 'decorators' => 'ViewHelper'));
+            $element = $this->addBlockElement($id, 'button', self::ELEMENT_DELETE, array('label' => null, 'type' => 'submit', 'decorators' => array('ViewHelper')));
             $this->_blocks[$id][self::ELEMENT_DELETE] = $element;
             $this->_dirtyIndex = true;
         }
 
         return $this->_blocks[$id][self::ELEMENT_DELETE];
-    } // }}}
+    }
 
     /**
      * Filtruje wartosci w bloku, wygodniejsze gdy nie ma potrzeby
