@@ -1,14 +1,24 @@
 <?php
 
-class ManipleBlockform_Bootstrap extends Zefram_Application_Module_Bootstrap
+class ManipleBlockform_Bootstrap extends Maniple_Application_Module_Bootstrap
 {
-    protected function _initView()
+    public function getViewConfig()
     {
-        $bootstrap = $this->getApplication();
-        $bootstrap->bootstrap('View');
+        return array(
+            'helperPaths' => array(
+                'ManipleBlockform_View_Helper_' => __DIR__ . '/library/ManipleBlockform/View/Helper/',
+            ),
+        );
+    }
 
-        /** @var Zend_View $view */
-        $view = $bootstrap->getResource('View');
-        $view->addHelperPath(__DIR__ . '/library/ManipleBlockform/View/Helper/', 'ManipleBlockform_View_Helper_');
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend_Loader_StandardAutoloader' => array(
+                'prefixes' => array(
+                    'ManipleBlockform_' => __DIR__ . '/library/ManipleBlockform/',
+                ),
+            ),
+        );
     }
 }
