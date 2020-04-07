@@ -10,6 +10,9 @@
  * 2019-09-14  - handle comments when adding attributes to block element
  * 2018-04-14  - added autoInit setting
  *             - added vars setting, custom variables are available via block.*
+ *
+ * @noinspection PhpDocMissingThrowsInspection
+ * @noinspection PhpUnhandledExceptionInspection
  */
 class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlElement
 {
@@ -19,15 +22,15 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param  Zend_Cache_Core $cache
      * @return void
      */
-    public static function setCache(Zend_Cache_Core $cache) // {{{
+    public static function setCache(Zend_Cache_Core $cache)
     {
         self::$_cache = $cache;
-    } // }}}
+    }
 
     /**
      * @return Zend_Cache_Core
      */
-    public static function getCache() // {{{
+    public static function getCache()
     {
         if (null === self::$_cache) {
             switch (true) {
@@ -48,7 +51,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         return self::$_cache;
-    } // }}}
+    }
 
     /**
      * @param ManipleBlockform_Form_Blockform $form
@@ -56,16 +59,16 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param array $options OPTIONAL
      * @return mixed
      */
-    public function blockform2(ManipleBlockform_Form_Blockform $form = null, $viewScript = null, array $options = null) // {{{
+    public function blockform2(ManipleBlockform_Form_Blockform $form = null, $viewScript = null, array $options = null)
     {
         if (null === $form) {
             return $this;
         }
 
         return $this->render($form, $viewScript, $options);
-    } // }}}
+    }
 
-    public function renderBlockHtml($viewScript, ManipleBlockform_Form_Blockform $form, $id, array $vars = null) // {{{
+    public function renderBlockHtml($viewScript, ManipleBlockform_Form_Blockform $form, $id, array $vars = null)
     {
         $elements = $form->getBlockElements($id);
 
@@ -94,7 +97,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         );
 
         return $this->view->renderScript($viewScript, $vars);
-    } // }}}
+    }
 
     /**
      * Options:
@@ -108,7 +111,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param  array $options OPTIONAL
      * @return string
      */
-    public function renderBlockTemplate(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null) // {{{
+    public function renderBlockTemplate(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null)
     {
         $cache = null;
         $vars = isset($options['vars']) ? (array) $options['vars'] : array();
@@ -174,7 +177,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         return $blockHtml;
-    } // }}}
+    }
 
     /**
      * Options:
@@ -186,7 +189,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param  array $options OPTIONAL
      * @return string
      */
-    public function renderBlocks(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null) // {{{
+    public function renderBlocks(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = null)
     {
         if (isset($options['blockContainerTag'])) {
             $blockContainerTag = trim($options['blockContainerTag'], "<> \t\n\t");
@@ -218,7 +221,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         return $html;
-    } // }}}
+    }
 
     /**
      * Options:
@@ -229,7 +232,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param array $options
      * @return string
      */
-    protected function _finalizeBlock($blockHtml, $id, array $options = null) // {{{
+    protected function _finalizeBlock($blockHtml, $id, array $options = null)
     {
         $blockTag = null;
 
@@ -271,7 +274,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         }
 
         return $blockHtml;
-    } // }}}
+    }
 
     /**
      * Renders block form using given view script to render contained
@@ -294,7 +297,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
      * @param  array $options OPTIONAL
      * @return string
      */
-    public function render(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = array()) // {{{
+    public function render(ManipleBlockform_Form_Blockform $form, $viewScript, array $options = array())
     {
         $indexHtml = null;
         $adderHtml = null;
@@ -316,7 +319,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
 
         if ($index = $form->getElement(ManipleBlockform_Form_Blockform::ELEMENT_INDEX)) {
             if (isset($options['indexId'])) {
-                $index->setId($options['indexId']);
+                $index->setAttrib('id', $options['indexId']);
             }
             $index->setAttrib('data-role', 'blockform.blockIndex');
 
@@ -347,8 +350,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
             . '</div>';
 
         return $html;
-    } // }}}
-
+    }
 
     public function renderAdder(Zend_Form_Element $adder, array $options = null)
     {
@@ -363,7 +365,7 @@ class ManipleBlockform_View_Helper_Blockform2 extends Zend_View_Helper_HtmlEleme
         $adder->setAttrib('escape', (bool) $escape);
 
         if (isset($options['adderId'])) {
-            $adder->setId($options['adderId']);
+            $adder->setAttrib('id', $options['adderId']);
         }
         $adder->setAttrib('data-role', 'blockform.blockAdder');
 
